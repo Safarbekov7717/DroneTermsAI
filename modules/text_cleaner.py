@@ -1,98 +1,98 @@
-import re
+import re  # Импортируем модуль регулярных выражений
 
-class TextCleaner:
-    def __init__(self):
+class TextCleaner:  # Класс для очистки текста от ненужных элементов
+    def __init__(self):  # Конструктор класса
         # Паттерны для очистки
-        self.patterns = {
-            'literature': r'(?i)(Литература.*|Список.*литературы.*|Библиографический список.*|References.*)',
-            'figures': r'(?i)Рисунок\s+\d+.*?\.|\bРис\.\s*\d+.*?\.',
-            'names': r'\b[А-ЯЁ][а-яё]+\s+[А-ЯЁ]\.\s*[А-ЯЁ]\.|[А-ЯЁ]\.\s*[А-ЯЁ]\.\s+[А-ЯЁ][а-яё]+|[А-ЯЁ][а-яё]+\s+и\s+[А-ЯЁ][а-яё]+',
-            'special_chars': r'[^\w\s.,!?;:()\-"«»]',
-            'multiple_spaces': r'\s+',
-            'multiple_punctuation': r'\.{2,}|,{2,}|!{2,}|\?{2,}|;{2,}',
-            'spaces_before_punctuation': r'\s+([.,!?;:])',
-            'empty_lines': r'\n\s*\n',
+        self.patterns = {  # Словарь с регулярными выражениями для разных типов очистки
+            'literature': r'(?i)(Литература.*|Список.*литературы.*|Библиографический список.*|References.*)',  # Паттерн для поиска раздела литературы
+            'figures': r'(?i)Рисунок\s+\d+.*?\.|Рис\.\s*\d+.*?\.',  # Паттерн для поиска упоминаний рисунков
+            'names': r'\b[А-ЯЁ][а-яё]+\s+[А-ЯЁ]\.\s*[А-ЯЁ]\.|[А-ЯЁ]\.\s*[А-ЯЁ]\.\s+[А-ЯЁ][а-яё]+|[А-ЯЁ][а-яё]+\s+и\s+[А-ЯЁ][а-яё]+',  # Паттерн для поиска имен авторов
+            'special_chars': r'[^\w\s.,!?;:()\-\"«»]',  # Паттерн для поиска специальных символов
+            'multiple_spaces': r'\s+',  # Паттерн для поиска множественных пробелов
+            'multiple_punctuation': r'\.{2,}|,{2,}|!{2,}|\?{2,}|;{2,}',  # Паттерн для поиска повторяющихся знаков препинания
+            'spaces_before_punctuation': r'\s+([.,!?;:])',  # Паттерн для поиска пробелов перед знаками препинания
+            'empty_lines': r'\n\s*\n',  # Паттерн для поиска пустых строк
             'dashes_underscores': r'[-_]+',  # Новый паттерн для тире и подчеркиваний
         }
 
-    def remove_literature_section(self, text):
+    def remove_literature_section(self, text):  # Метод для удаления раздела литературы
         """Удаление раздела литературы и всего после него"""
-        return re.split(self.patterns['literature'], text)[0]
+        return re.split(self.patterns['literature'], text)[0]  # Разделяем текст по паттерну и берем первую часть
 
-    def remove_figures(self, text):
+    def remove_figures(self, text):  # Метод для удаления упоминаний рисунков
         """Удаление упоминаний рисунков"""
-        return re.sub(self.patterns['figures'], '', text)
+        return re.sub(self.patterns['figures'], '', text)  # Заменяем найденные упоминания рисунков на пустую строку
 
-    def remove_names(self, text):
+    def remove_names(self, text):  # Метод для удаления имен авторов
         """Удаление имен авторов в различных форматах"""
-        return re.sub(self.patterns['names'], '', text)
+        return re.sub(self.patterns['names'], '', text)  # Заменяем найденные имена на пустую строку
 
-    def clean_text(self, text):
-        if not text:
-            return text
-
-        print("Начало очистки текста...")
+    def clean_text(self, text):  # Основной метод для очистки текста
+        if not text:  # Проверка на пустой текст
+            return text  # Возвращаем текст без изменений, если он пустой
+        
+        print("Начало очистки текста...")  # Вывод сообщения о начале очистки
 
         # Удаление раздела литературы и всего после него
-        text = self.remove_literature_section(text)
+        text = self.remove_literature_section(text)  # Вызываем метод для удаления раздела литературы
 
         # Удаление упоминаний рисунков
-        text = self.remove_figures(text)
+        text = self.remove_figures(text)  # Вызываем метод для удаления упоминаний рисунков
 
         # Удаление имен авторов
-        text = self.remove_names(text)
+        text = self.remove_names(text)  # Вызываем метод для удаления имен авторов
 
         # Удаление тире и подчеркиваний
-        text = re.sub(self.patterns['dashes_underscores'], ' ', text)
+        text = re.sub(self.patterns['dashes_underscores'], ' ', text)  # Заменяем тире и подчеркивания на пробелы
 
         # Удаление специальных символов
-        text = re.sub(self.patterns['special_chars'], ' ', text)
+        text = re.sub(self.patterns['special_chars'], ' ', text)  # Заменяем специальные символы на пробелы
 
         # Замена множественных знаков препинания на одиночные
-        text = re.sub(self.patterns['multiple_punctuation'], lambda m: m.group()[0], text)
+        text = re.sub(self.patterns['multiple_punctuation'], lambda m: m.group()[0], text)  # Заменяем повторяющиеся знаки на один
 
         # Удаление пробелов перед знаками препинания
-        text = re.sub(self.patterns['spaces_before_punctuation'], r'\1', text)
+        text = re.sub(self.patterns['spaces_before_punctuation'], r'\1', text)  # Удаляем пробелы перед знаками препинания
 
         # Удаление множественных пробелов и пустых строк
-        text = re.sub(self.patterns['multiple_spaces'], ' ', text)
-        text = re.sub(self.patterns['empty_lines'], '\n', text)
+        text = re.sub(self.patterns['multiple_spaces'], ' ', text)  # Заменяем множественные пробелы на один
+        text = re.sub(self.patterns['empty_lines'], '\n', text)  # Заменяем пустые строки на один перенос строки
 
         # Дополнительная очистка
-        text = text.replace(' ,', ',')
-        text = text.replace(' .', '.')
-        text = text.replace(' !', '!')
-        text = text.replace(' ?', '?')
-        text = text.replace(' ;', ';')
-        text = text.replace(' :', ':')
+        text = text.replace(' ,', ',')  # Удаляем пробел перед запятой
+        text = text.replace(' .', '.')  # Удаляем пробел перед точкой
+        text = text.replace(' !', '!')  # Удаляем пробел перед восклицательным знаком
+        text = text.replace(' ?', '?')  # Удаляем пробел перед вопросительным знаком
+        text = text.replace(' ;', ';')  # Удаляем пробел перед точкой с запятой
+        text = text.replace(' :', ':')  # Удаляем пробел перед двоеточием
 
         # Удаление пробелов в начале и конце текста
-        text = text.strip()
+        text = text.strip()  # Удаляем пробелы в начале и конце текста
 
-        print("Очистка текста завершена")
-        return text
+        print("Очистка текста завершена")  # Вывод сообщения о завершении очистки
+        return text  # Возвращаем очищенный текст
 
-    def clean_and_log(self, text):
+    def clean_and_log(self, text):  # Метод для очистки с логированием
         """Метод для отладки с выводом информации о каждом этапе очистки"""
-        print("Исходный размер текста:", len(text))
+        print("Исходный размер текста:", len(text))  # Выводим размер исходного текста
         
         # Очистка с логированием каждого этапа
-        text = self.remove_literature_section(text)
-        print("После удаления литературы:", len(text))
+        text = self.remove_literature_section(text)  # Удаляем раздел литературы
+        print("После удаления литературы:", len(text))  # Выводим размер текста после удаления литературы
         
-        text = self.remove_figures(text)
-        print("После удаления рисунков:", len(text))
+        text = self.remove_figures(text)  # Удаляем упоминания рисунков
+        print("После удаления рисунков:", len(text))  # Выводим размер текста после удаления рисунков
         
-        text = self.remove_names(text)
-        print("После удаления имен:", len(text))
+        text = self.remove_names(text)  # Удаляем имена авторов
+        print("После удаления имен:", len(text))  # Выводим размер текста после удаления имен
         
-        text = re.sub(self.patterns['dashes_underscores'], ' ', text)
-        print("После удаления тире и подчеркиваний:", len(text))
+        text = re.sub(self.patterns['dashes_underscores'], ' ', text)  # Удаляем тире и подчеркивания
+        print("После удаления тире и подчеркиваний:", len(text))  # Выводим размер текста после удаления тире и подчеркиваний
         
-        text = re.sub(self.patterns['special_chars'], ' ', text)
-        print("После удаления специальных символов:", len(text))
+        text = re.sub(self.patterns['special_chars'], ' ', text)  # Удаляем специальные символы
+        print("После удаления специальных символов:", len(text))  # Выводим размер текста после удаления специальных символов
         
-        text = self.clean_text(text)
-        print("Финальный размер текста:", len(text))
+        text = self.clean_text(text)  # Выполняем полную очистку текста
+        print("Финальный размер текста:", len(text))  # Выводим размер финального текста
         
-        return text
+        return text  # Возвращаем очищенный текст

@@ -1,84 +1,84 @@
-from openai import OpenAI
-import os
-from dotenv import load_dotenv
-from tqdm import tqdm
-import threading
-import time
+from openai import OpenAI  # Импортируем класс OpenAI из библиотеки openai
+import os  # Импортируем модуль для работы с операционной системой
+from dotenv import load_dotenv  # Импортируем функцию для загрузки переменных окружения из .env файла
+from tqdm import tqdm  # Импортируем класс для отображения прогресс-бара
+import threading  # Импортируем модуль для работы с потоками
+import time  # Импортируем модуль для работы со временем
 
-class AIProcessor:
-    def __init__(self):
-        load_dotenv()
-        self.client = OpenAI(
-            base_url=os.getenv('OPENAI_BASE_URL'),
-            api_key=os.getenv('OPENAI_API_KEY')
+class AIProcessor:  # Класс для обработки текста с помощью ИИ
+    def __init__(self):  # Конструктор класса
+        load_dotenv()  # Загружаем переменные окружения из .env файла
+        self.client = OpenAI(  # Инициализируем клиент OpenAI
+            base_url=os.getenv('OPENAI_BASE_URL'),  # Получаем базовый URL из переменных окружения
+            api_key=os.getenv('OPENAI_API_KEY')  # Получаем API ключ из переменных окружения
         )
-        self.available_models = {
-            '1': 'gpt-4o',
-            '2': 'deepseek-chat'
+        self.available_models = {  # Словарь доступных моделей
+            '1': 'gpt-4o',  # Модель GPT-4o
+            '2': 'deepseek-chat'  # Модель DeepSeek Chat
         }
-        self.model_name = None
-        self.processing = False
+        self.model_name = None  # Имя выбранной модели, изначально не выбрано
+        self.processing = False  # Флаг, указывающий на процесс обработки
 
-    def select_model(self):
+    def select_model(self):  # Метод для выбора модели ИИ
         """Выбор модели ИИ"""
-        while True:
-            print("\nДоступные модели ИИ:")
-            print("0. Вернуться в главное меню")
-            print("1. GPT-4o")
-            print("2. DeepSeek Chat")
-            choice = input("\nВыберите модель (0-2): ")
+        while True:  # Бесконечный цикл для выбора модели
+            print("\nДоступные модели ИИ:")  # Выводим заголовок
+            print("0. Вернуться в главное меню")  # Опция возврата в главное меню
+            print("1. GPT-4o")  # Опция выбора GPT-4o
+            print("2. DeepSeek Chat")  # Опция выбора DeepSeek Chat
+            choice = input("\nВыберите модель (0-2): ")  # Запрашиваем выбор пользователя
             
-            if choice == '0':
-                print("\nВозвращаемся в главное меню...")
-                return "return_to_main"  # Специальный флаг для возврата
-            elif choice in self.available_models:
-                self.model_name = self.available_models[choice]
-                print(f"\nВыбрана модель: {self.model_name}")
-                return True
-            else:
-                print("Пожалуйста, выберите 0, 1 или 2")
+            if choice == '0':  # Если выбран возврат в главное меню
+                print("\nВозвращаемся в главное меню...")  # Выводим сообщение
+                return "return_to_main"  # Возвращаем специальный флаг для возврата
+            elif choice in self.available_models:  # Если выбрана доступная модель
+                self.model_name = self.available_models[choice]  # Устанавливаем имя выбранной модели
+                print(f"\nВыбрана модель: {self.model_name}")  # Выводим сообщение о выбранной модели
+                return True  # Возвращаем True, указывая на успешный выбор
+            else:  # Если выбор некорректен
+                print("Пожалуйста, выберите 0, 1 или 2")  # Выводим сообщение об ошибке
 
-    def show_processing_progress(self):
+    def show_processing_progress(self):  # Метод для отображения прогресса обработки
         """Показывает бесконечный прогресс-бар обработки"""
-        with tqdm(total=100, desc="Обработка текста", bar_format="{l_bar}{bar}| Ожидание ответа от ИИ...") as pbar:
-            progress = 0
-            while self.processing:
-                progress = (progress + 1) % 100
-                pbar.n = progress
-                pbar.refresh()
-                time.sleep(0.1)
+        with tqdm(total=100, desc="Обработка текста", bar_format="{l_bar}{bar}| Ожидание ответа от ИИ...") as pbar:  # Создаем прогресс-бар
+            progress = 0  # Начальный прогресс
+            while self.processing:  # Пока идет обработка
+                progress = (progress + 1) % 100  # Увеличиваем прогресс по модулю 100
+                pbar.n = progress  # Устанавливаем текущее значение прогресса
+                pbar.refresh()  # Обновляем отображение прогресс-бара
+                time.sleep(0.1)  # Пауза 0.1 секунды
             # Заполняем прогресс-бар до конца после получения ответа
-            pbar.n = 100
-            pbar.refresh()
+            pbar.n = 100  # Устанавливаем прогресс 100%
+            pbar.refresh()  # Обновляем отображение прогресс-бара
 
-    def process_text(self, cleaned_text):
-        if not cleaned_text:
-            print("Получен пустой текст для обработки")
-            return None
+    def process_text(self, cleaned_text):  # Метод для обработки текста
+        if not cleaned_text:  # Если текст пустой
+            print("Получен пустой текст для обработки")  # Выводим сообщение об ошибке
+            return None  # Возвращаем None
 
-        if not self.model_name:
-            model_result = self.select_model()
-            if model_result == "return_to_main":
+        if not self.model_name:  # Если модель не выбрана
+            model_result = self.select_model()  # Предлагаем выбрать модель
+            if model_result == "return_to_main":  # Если выбран возврат в главное меню
                 return "return_to_main"  # Передаем флаг возврата дальше
-            elif not model_result:
-                return None
+            elif not model_result:  # Если выбор модели не удался
+                return None  # Возвращаем None
 
-        print(f"Начало обработки текста через ИИ (модель: {self.model_name})...")
+        print(f"Начало обработки текста через ИИ (модель: {self.model_name})...")  # Выводим сообщение о начале обработки
         try:
-            self.processing = True
+            self.processing = True  # Устанавливаем флаг обработки
             # Запускаем прогресс-бар в отдельном потоке
-            progress_thread = threading.Thread(target=self.show_processing_progress)
-            progress_thread.start()
+            progress_thread = threading.Thread(target=self.show_processing_progress)  # Создаем поток для отображения прогресса
+            progress_thread.start()  # Запускаем поток
             
             # Выполняем запрос к ИИ
-            completion = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[
+            completion = self.client.chat.completions.create(  # Создаем запрос к API
+                model=self.model_name,  # Указываем выбранную модель
+                messages=[  # Список сообщений для чата
                     {
-                        "role": "user",
-                        "content": [
+                        "role": "user",  # Роль отправителя - пользователь
+                        "content": [  # Содержимое сообщения
                             {
-                                "type": "text",
+                                "type": "text",  # Тип содержимого - текст
                                 "text": f"""Извлеки из текста термины, связанные с беспилотными авиационными системами (БАС) и 
                                 беспилотными летательными аппаратами (БПЛА). Верни результат строго в следующем формате:
 
@@ -88,7 +88,7 @@ class AIProcessor:
                                 Релевантность: [процент]%
 
                                 Текст для анализа:
-                                {cleaned_text}"""
+                                {cleaned_text}"""  # Текст запроса с включением очищенного текста
                             }
                         ]
                     }
@@ -96,14 +96,14 @@ class AIProcessor:
             )
             
             # Останавливаем прогресс-бар
-            self.processing = False
-            progress_thread.join()
+            self.processing = False  # Сбрасываем флаг обработки
+            progress_thread.join()  # Ожидаем завершения потока с прогресс-баром
             
-            print("\nОбработка текста через ИИ завершена")
-            return completion.choices[0].message.content
+            print("\nОбработка текста через ИИ завершена")  # Выводим сообщение о завершении обработки
+            return completion.choices[0].message.content  # Возвращаем содержимое ответа от ИИ
             
-        except Exception as e:
-            self.processing = False
-            progress_thread.join()
-            print(f"\nОшибка при обработке текста ИИ: {e}")
-            return None
+        except Exception as e:  # Обрабатываем возможные исключения
+            self.processing = False  # Сбрасываем флаг обработки
+            progress_thread.join()  # Ожидаем завершения потока с прогресс-баром
+            print(f"\nОшибка при обработке текста ИИ: {e}")  # Выводим сообщение об ошибке
+            return None  # Возвращаем None

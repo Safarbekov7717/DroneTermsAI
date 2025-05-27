@@ -1,9 +1,9 @@
-from interface import Interface
+from interface import Interface  # Импортирует класс Interface из модуля interface
 
 def main():
-    """Точка входа в программу"""
-    interface = Interface()
-    interface.run()
+    """Точка входа в программу"""  # Докстринг, описывающий функцию
+    interface = Interface()  # Создает экземпляр класса Interface
+    interface.run()  # Вызывает метод run(), запускающий основной функционал программы
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__":  # Проверяет, запущен ли файл напрямую (не импортирован)
+    main()  # Если файл запущен напрямую, вызывает функцию main()
