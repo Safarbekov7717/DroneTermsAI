@@ -1,0 +1,18 @@
+Беспилотный летательный аппарат (БПЛА)
+Беспилотная авиационная система (БАС)
+БПЛА
+БАС
+Virtual Simulation
+Виртуальная симуляция
+Gazebo
+ROS (Robot Operating System)
+Lidar (Light Detection and Ranging)
+Лидар
+GPS (Global Positioning System)
+Autonomous Tractor
+Simulation Description Format (SDF)
+Беспилотный трактор
+Виртуальный полигон
+Актуатор
+Сонар
+Глобальная система позиционирования
