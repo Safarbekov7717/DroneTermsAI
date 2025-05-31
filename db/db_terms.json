@@ -432,5 +432,12 @@
         "translation": "Unified troop control systems",
         "relevance": 80.0,
         "timestamp": "2025-05-30 19:47:11"
+    },
+    "БПЛА": {
+        "term": "БПЛА",
+        "definition": "Беспилотный летательный аппарат — летательный аппарат без экипажа на борту.",
+        "translation": "Unmanned Aerial Vehicle (UAV)",
+        "relevance": 100.0,
+        "timestamp": "2025-05-31 18:26:38"
     }
 }
