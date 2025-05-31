@@ -8,7 +8,6 @@ import time  # Импортирует модуль для работы со вр
 from colorama import init, Fore, Back, Style  # Импортирует библиотеку для цветного вывода в консоль
 from tqdm import tqdm  # Импортирует библиотеку для отображения прогресс-баров
 from modules.metrics import load_reference_terms, evaluate_terms
-import tkinter as tk
 
 # Инициализация colorama для Windows
 init()  # Инициализирует библиотеку colorama для корректной работы в Windows
@@ -37,33 +36,21 @@ class Interface:  # Определяет основной класс интер�
         self.data_saver = DataSaver()  # Создает экземпляр сохранителя данных
         self.supported_formats = ('.pdf', '.doc', '.docx')  # Определяет поддерживаемые форматы файлов
         
-    def show_logo(self):
-        import climage
+    def show_logo(self):  # Метод для отображения логотипа программы
+        logo = """
+    ██████╗ ██████╗  ██████╗ ███╗   ██╗███████╗████████╗███████╗██████╗ ███╗   ███╗███████╗🚁
+    ██╔══██╗██╔══██╗██╔═══██╗████╗  ██║██╔════╝╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██╔════╝🚁
+    ██║  ██║██████╔╝██║   ██║██╔██╗ ██║█████╗     ██║   █████╗  ██████╔╝██╔████╔██║███████╗✈️
+    ██║  ██║██╔══██╗██║   ██║██║╚██╗██║██╔══╝     ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║╚════██║✈️
+    ██████╔╝██║  ██║╚██████╔╝██║ ╚████║███████╗   ██║   ███████╗██║  ██║██║ ╚═╝ ██║███████║✈︎
+    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝✈︎
+                                                       
+    """  # ASCII-арт логотип программы с добавленным самолетиком
+        print(f"{Colors.ORANGE}{logo}{Colors.RESET}")  # Выводит логотип оранжевым цветом
+        print(f'{Colors.WHITE}DroneTerms AI - Система для автоматизации подготовки русско-английского глоссария предметной области "Беспилотные авиационные системы"{Colors.RESET}')  # Выводит название программы
+        print(f"{Colors.GRAY}Версия 1.0 | {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}{Colors.RESET}")  # Выводит версию и текущую дату/время серым цветом
+        print(f"{Colors.ORANGE}{'='*80}{Colors.RESET}")  # Выводит разделительную линию оранжевым цветом
         
-        # Путь к вашему PNG файлу
-        png_path = "image.png"
-        
-        try:
-            # Расширенные параметры для настройки отображения
-            output = climage.convert(
-                png_path,
-                width=120,         # Ширина в символах
-                is_unicode=True,  # Использовать Unicode символы для лучшего качества
-                is_truecolor=True,  # Использовать true color если терминал поддерживает
-                is_256color=False,  # Использовать 256 цветов вместо true color
-                is_16color=False,   # Использовать 16 цветов
-                is_8color=False     # Использовать 8 цветов
-            )
-            print(f"{Colors.ORANGE}{output}{Colors.RESET}")
-            
-        except Exception as e:
-            print(f"{Colors.ORANGE}[Не удалось отобразить логотип: {e}]{Colors.RESET}")
-        
-        print(f'{Colors.WHITE}Система для автоматизации подготовки русско-английского глоссария предметной области "Беспилотные авиационные системы"{Colors.RESET}')
-        print(f"{Colors.GRAY}Версия 1.0 | {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}{Colors.RESET}")
-        print(f"{Colors.ORANGE}{'='*80}{Colors.RESET}")
-
-
     def show_progress(self, description, seconds):  # Метод для отображения прогресс-бара
         for _ in tqdm(range(100), desc=description, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}", colour="#F9633B"):  # Создает прогресс-бар с 100 шагами и оранжевым цветом
             time.sleep(seconds/100)  # Задержка для каждого шага (общее время = seconds)
